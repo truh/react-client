@@ -32,6 +32,7 @@ import { getPDFReplacement } from './replace-components/pdf/pdf-frame'
 import { getTOCReplacement } from './replace-components/toc/toc-replacer'
 import { getVimeoReplacement } from './replace-components/vimeo/vimeo-frame'
 import { getYouTubeReplacement } from './replace-components/youtube/youtube-frame'
+import { SlugGenerator } from './slug-generator'
 
 export interface MarkdownPreviewProps {
   content: string
@@ -60,6 +61,8 @@ const MarkdownRenderer: React.FC<MarkdownPreviewProps> = ({ content }) => {
       langPrefix: '',
       typographer: true
     })
+    const gfmSlugs = new Set<string>()
+    const slugGenerator = new SlugGenerator('gfm', gfmSlugs)
     md.use(taskList)
     md.use(emoji)
     md.use(abbreviation)
@@ -73,10 +76,12 @@ const MarkdownRenderer: React.FC<MarkdownPreviewProps> = ({ content }) => {
       permalink: true,
       permalinkBefore: true,
       permalinkClass: 'heading-anchor text-dark',
-      permalinkSymbol: '<i class="fa fa-link"></i>'
+      permalinkSymbol: '<i class="fa fa-link"></i>',
+      slugify: (text: string): string => slugGenerator.generateSlug(text)
     })
     md.use(toc, {
-      markerPattern: /^\[TOC]$/i
+      markerPattern: /^\[TOC]$/i,
+      slugify: (text: string): string => slugGenerator.generateSlug(text)
     })
     md.use(markdownItRegex, replaceLegacyYoutubeShortCode)
     md.use(markdownItRegex, replaceLegacyVimeoShortCode)
