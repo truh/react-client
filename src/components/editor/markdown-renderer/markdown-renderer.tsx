@@ -46,6 +46,7 @@ import { QuoteOptionsReplacer } from './replace-components/quote-options/quote-o
 import { TocReplacer } from './replace-components/toc/toc-replacer'
 import { VimeoReplacer } from './replace-components/vimeo/vimeo-replacer'
 import { YoutubeReplacer } from './replace-components/youtube/youtube-replacer'
+import { lineNumberMarker } from './markdown-it-plugins/line-number-marker'
 
 export interface MarkdownPreviewProps {
   content: string
@@ -59,6 +60,7 @@ const createMarkdownIt = (): MarkdownIt => {
     langPrefix: '',
     typographer: true
   })
+  md.use(lineNumberMarker)
   md.use(taskList)
   md.use(emoji)
   md.use(abbreviation)
